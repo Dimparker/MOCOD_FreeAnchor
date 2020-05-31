@@ -133,6 +133,4 @@ if __name__ == "__main__":
     convert_xmls_to_cocojson(ann_paths_train, output_json_path=OUTPUT_TRAIN_JSON_PATH, label_info={"Car":1,"Human":2,"Ship":3,"Plane":4})
     convert_xmls_to_cocojson(ann_paths_val, output_json_path=OUTPUT_VAL_JSON_PATH, label_info={"Car":1,"Human":2,"Ship":3,"Plane":4})
    
-    
 
-# CUDA_VISIBLE_DEVICES=0,1,2,3 python -m torch.distributed.launch --nproc_per_node=4  /home/xjma/Downloads/MOCOD/FreeAnchor/tools/train_net.py --config-file "/home/xjma/Downloads/MOCOD/FreeAnchor/configs/file.yaml"

@@ -136,9 +136,9 @@ if __name__ == "__main__":
     PIC_PATH = '/home/xjma/Downloads/MOCOD/JPEGImages'
    
     ann_paths = get_ann_paths(ANNOTATION_PATH,PIC_PATH, OUTPUT_TRAIN_PIC_PATH, OUTPUT_VAL_PIC_PATH, OUTPUT_TEST_PIC_PATH, TRAINVAL, TEST)
-    # ann_paths_train = ann_paths["ann_paths_train"]
-    # ann_paths_val = ann_paths["ann_paths_val"]
-    # convert_xmls_to_cocojson(ann_paths_train, output_json_path=OUTPUT_TRAIN_JSON_PATH, label_info={"Car":1,"Human":2,"Ship":3,"Plane":4})
-    # convert_xmls_to_cocojson(ann_paths_val, output_json_path=OUTPUT_VAL_JSON_PATH, label_info={"Car":1,"Human":2,"Ship":3,"Plane":4})
+    ann_paths_train = ann_paths["ann_paths_train"]
+    ann_paths_val = ann_paths["ann_paths_val"]
+    convert_xmls_to_cocojson(ann_paths_train, output_json_path=OUTPUT_TRAIN_JSON_PATH, label_info={"Car":1,"Human":2,"Ship":3,"Plane":4})
+    convert_xmls_to_cocojson(ann_paths_val, output_json_path=OUTPUT_VAL_JSON_PATH, label_info={"Car":1,"Human":2,"Ship":3,"Plane":4})
    
 

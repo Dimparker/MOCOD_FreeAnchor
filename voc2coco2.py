@@ -6,11 +6,17 @@ from tqdm import tqdm
 import re
 import random
 import shutil
-def get_ann_paths(ann_dir_path, pic_dir_path, save_train_pic_path, save_val_pic_path, trainval_txt):
-    # ann_path = {}
+def get_ann_paths(ann_dir_path, pic_dir_path, save_train_pic_path, save_val_pic_path, save_test_pic_path, trainval_txt, test_txt):
+    test_ids = []
     ann_ids = []
     ann_paths_train = []
     ann_paths_val = []
+
+    with open(test_txt, 'r') as f:
+        for test_lines in f.readlines():
+            test_data = test_lines.strip('\n')
+            test_ids.append(test_data)
+
     with open(trainval_txt, 'r') as f:
         for trainval_line in f.readlines():
             # trainval_data = trainval_line.strip('\n') + '.xml'
@@ -19,26 +25,27 @@ def get_ann_paths(ann_dir_path, pic_dir_path, save_train_pic_path, save_val_pic_
     random.seed(1)
     train_ids = random.sample(ann_ids, int(0.8*len(ann_ids)))
     val_ids = list(set(ann_ids) - set(train_ids))
+
     print('Start move train figure!')
     for train_aid in  tqdm(train_ids):
         old_train_pic_path = os.path.join(pic_dir_path, train_aid + '.png')
         new_train_pic_path = os.path.join(save_train_pic_path, train_aid + '.png')
         shutil.copyfile(old_train_pic_path, new_train_pic_path)
         ann_paths_train.append(os.path.join(ann_dir_path, train_aid + '.xml'))
+
     print('Start move val figure!')
     for val_aid in tqdm(val_ids):
         old_val_pic_path = os.path.join(pic_dir_path, val_aid + '.png')
         new_val_pic_path = os.path.join(save_val_pic_path, val_aid + '.png')
         shutil.copyfile(old_val_pic_path, new_val_pic_path)
         ann_paths_val.append(os.path.join(ann_dir_path, val_aid + '.xml'))
-    # pic_paths_train = [os.path.join(pic_dir_path, aid + '.png') for aid in train_ids]
-    # pic_paths_val = [os.path.join(pic_dir_path, aid + '.png') for aid in val_ids]
-    # ann_paths_train = [os.path.join(ann_dir_path, aid + '.xml') for aid in train_ids]
-    # ann_paths_val = [os.path.join(ann_dir_path, aid + '.xml') for aid in val_ids]
-    # ann_paths_train = random.sample(ann_paths, int(0.8*len(ann_paths)))
-    # ann_paths_val = list(set(ann_paths) - set(ann_paths_train))
-    # print(len(ann_paths_train), len(ann_paths_val))
-    # if not return_train: return ann_paths_val
+
+    print('Start move test figure!')
+    for test_aid in tqdm(test_ids):
+        old_test_pic_path = os.path.join(pic_dir_path, test_aid + '.png')
+        new_test_pic_path = os.path.join(save_test_pic_path, test_aid + '.png')
+        shutil.copyfile(old_test_pic_path, new_test_pic_path)
+
     ann_path = {"ann_paths_train":ann_paths_train, "ann_paths_val":ann_paths_val}
     return ann_path
 
@@ -121,16 +128,17 @@ if __name__ == "__main__":
     OUTPUT_VAL_JSON_PATH = '/home/xjma/Downloads/MOCOD/coco/annotations/val2020.json'     # save val.json
     OUTPUT_TRAIN_PIC_PATH = '/home/xjma/Downloads/MOCOD/coco/train2020'
     OUTPUT_VAL_PIC_PATH = '/home/xjma/Downloads/MOCOD/coco/val2020'
+    OUTPUT_TEST_PIC_PATH = '/home/xjma/Downloads/MOCOD/coco/test2020'
 
     ANNOTATION_PATH = '/home/xjma/Downloads/MOCOD/Annotations'  # change path to Annotations dir 
     TRAINVAL = '/home/xjma/Downloads/MOCOD/Main/trainval.txt'  # change path to trainval.txt
+    TEST = '/home/xjma/Downloads/MOCOD/Main/test.txt'
     PIC_PATH = '/home/xjma/Downloads/MOCOD/JPEGImages'
-    # ann_paths_train = get_ann_paths(ANNOTATION_PATH, PIC_PATH, OUTPUT_TRAIN_PIC_PATH, OUTPUT_VAL_PIC_PATH,TRAINVAL, return_train=True)
-    # ann_paths_test = get_ann_paths(ANNOTATION_PATH,PIC_PATH, OUTPUT_TRAIN_PIC_PATH, OUTPUT_VAL_PIC_PATH, TRAINVAL, return_train=False)
-    ann_paths = get_ann_paths(ANNOTATION_PATH,PIC_PATH, OUTPUT_TRAIN_PIC_PATH, OUTPUT_VAL_PIC_PATH, TRAINVAL)
-    ann_paths_train = ann_paths["ann_paths_train"]
-    ann_paths_val = ann_paths["ann_paths_val"]
-    convert_xmls_to_cocojson(ann_paths_train, output_json_path=OUTPUT_TRAIN_JSON_PATH, label_info={"Car":1,"Human":2,"Ship":3,"Plane":4})
-    convert_xmls_to_cocojson(ann_paths_val, output_json_path=OUTPUT_VAL_JSON_PATH, label_info={"Car":1,"Human":2,"Ship":3,"Plane":4})
+   
+    ann_paths = get_ann_paths(ANNOTATION_PATH,PIC_PATH, OUTPUT_TRAIN_PIC_PATH, OUTPUT_VAL_PIC_PATH, OUTPUT_TEST_PIC_PATH, TRAINVAL, TEST)
+    # ann_paths_train = ann_paths["ann_paths_train"]
+    # ann_paths_val = ann_paths["ann_paths_val"]
+    # convert_xmls_to_cocojson(ann_paths_train, output_json_path=OUTPUT_TRAIN_JSON_PATH, label_info={"Car":1,"Human":2,"Ship":3,"Plane":4})
+    # convert_xmls_to_cocojson(ann_paths_val, output_json_path=OUTPUT_VAL_JSON_PATH, label_info={"Car":1,"Human":2,"Ship":3,"Plane":4})
    
 
